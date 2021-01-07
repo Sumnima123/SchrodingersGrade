@@ -1,0 +1,666 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">	
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Schedule</title>
+<link rel="stylesheet" type="text/css" href="main.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+<link href="http://fullcalendar.io/js/fullcalendar-2.2.5/fullcalendar.css" 
+			th:href="@{/webjars/fullcalendar/2.2.5/fullcalendar.css}" rel="stylesheet"></link>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js" th:src="@{/webjars/momentjs/2.9.0/min/moment.min.js}" type="text/javascript"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="http://fullcalendar.io/js/fullcalendar-2.2.5/fullcalendar.min.js"
+			th:src="@{/webjars/fullcalendar/2.2.5/fullcalendar.min.js}" type="text/javascript"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>		
+  
+    
+<style>
+body {
+
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@media screen and (max-width: 1000px) {
+	#name1 {
+		width: 100% !important;
+	}
+}
+@media ( min-width : 500px) {
+	.container {
+		max-width: 1700px;
+	}
+}
+@media screen and (max-width: 425px) {
+	#topnav a{
+		text-align: center !important;
+		width: 100% !important; 
+	}
+}
+
+#topnav {
+  overflow: hidden;
+  background-color: #840029;
+
+  width: 100%;
+}
+
+#topnav a {
+  float: right;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+
+  
+}
+
+#name1 {
+  float: right;
+  color:#840029;
+  text-align: center;
+  padding: 14px 18px;
+  text-decoration: none;
+  font-size: 17px;
+  background: #EBAB13;
+}
+
+#flightplan {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 11px 16px;
+  text-decoration: none;
+  font-size: 20px;  
+}
+
+#topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+#calendar{
+width:100%;
+
+}
+label{
+ 
+ display: inline-text; 
+  vertical-align: top;
+}
+
+.fc-unthemed th,
+.fc-unthemed td
+{
+	border-color: #ddd;
+}
+
+
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+
+.tab button:hover {
+  background-color: #ddd;
+}
+
+
+.tab button.active {
+  background-color: #ccc;
+}
+
+#deletesection
+{
+   padding-top: 15%;
+}
+
+</style>
+
+
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() 
+		{
+			$('#calendar').fullCalendar({
+				header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'agendaWeek,agendaDay'
+				},
+				contentHeight: 725,
+				minTime: '07:00:00',
+				maxTime: '21:00:00',
+				defaultView: 'agendaWeek',
+				editable: false,
+				eventOverlap: false,
+				timeZone: "CDT",
+				cache: false,
+				eventLimit: true,
+				allDay: false,
+				overlap: false,
+				allDaySlot: false,
+				eventColor: '#800000',
+				// allow "more" link when too many events
+				//businessHours:true,
+			    events: {
+			        url: '/events',
+			        type: 'GET',
+			        success: function(result){
+			        	calGlobal = result;
+			        	console.log(calGlobal);	
+			          // createDelete(calGlobal);   
+			        	
+			        },
+			        error: function() 
+			        {
+			            alert('there was an error while fetching events!');
+			        },
+			        //color: 'blue',   // a non-ajax option
+			        //textColor: 'white' // a non-ajax option
+			    }
+			    
+			});
+		});
+
+$(function() 
+{
+$("#title").autocomplete({
+    source: "titleAutocomplete",             
+    minLength: 1
+  });
+});
+
+
+$(function()
+		{
+			$.ajax({
+			      type : "GET",
+			      url :"/events",
+			      success: function(result)
+			      {
+			    	  global=result;
+			    	  //console.log(result.length);
+			    	  if(result.length >= 1)
+			          {
+			    	     createDelete(result);
+			    	     document.getElementById('buttonIdDelete').style.visibility = 'visible';
+			          }
+			    	  else
+			    	  {
+			              document.getElementById('buttonIdDelete').style.visibility = 'hidden';
+			    	  }
+			      }
+			});
+
+
+});
+
+
+function sendSuject()
+{
+	var ab = $("#title").val();
+	if(ab == null | ab == "")
+	{		
+		window.confirm(" Null value entered. Please enter section name before submit.");
+	}
+	
+	else
+	{
+	document.getElementById("selector").disabled = true
+	console.log('Hello');
+	
+	var dataObj = new Object();
+	dataObj.subject = ab;
+	
+	$.ajax({
+		type : "POST",
+		url : "/postsubject",
+		data : JSON.stringify(dataObj),
+		datatType: "json",
+		contentType : 'application/json; charset=UTF-8',
+		success : function (result)
+		{
+			
+			// CALLS Getter for sections
+			ajaxGet();
+			console.log(result + " is the result");
+		},
+		error : function (e){
+			console.log("Error: ", e);
+			//AutoRefresh(1);
+		}
+	});
+	
+	}
+}	
+
+
+var global = new Array();
+function ajaxGet(){
+    $.ajax({
+      type : "GET",
+      url :"getsubject",
+      success: function(result){
+    	  global=result;
+    	 // console.log(result);
+    	  
+    	  for(var value of global) 
+    		{
+    		//Append a radio button to each value of the global	
+    		var val= value;
+    		//
+    		var split = val.split(",");
+    		var tit= split[0];
+    		console.log(tit);
+    		var full= "<text class='uppercase' style='font-size:20px;'>"+tit+"</text><br>" + split[1];
+    		
+    	      $('#output')
+    	        .append(`<input type="radio" id="${value}" name="sections" value="${value}">`)
+    	        .append(`<label for="${value}" style=" padding-left: 10px; color: #393939;">${full}</label></div>`)
+    	        .append(`<hr>`);
+
+    		}
+    	  
+    	  var btn = document.createElement("INPUT");
+		    btn.id ="submitSection";
+		    btn.type="button";
+		    btn.value="Submit";
+		   
+		    //btn.onClick="reply_click()";
+		    $('#output').append(`<br>`).append(btn);
+		    
+		    var result;
+		    $('#submitSection').click(function() 
+		    {
+		    var radios = document.getElementsByName('sections');
+		    
+		    for (var i = 0; i < radios.length; i++) 
+		    {
+			   if (radios[i].checked) 
+			  {
+                result = radios[i].value;
+                
+			    break;
+			  }
+			}  //End of for loop
+			console.log(result);
+		    $.ajax({
+					type : "POST",
+					url : "accepted",
+					data : result,
+					success : function (result){
+						console.log(result + " is the result");
+						AutoRefresh(1); 
+						//listOfCourses();
+						ajaxGetCollisionResult();
+					},
+					error : function (e){
+						console.log("Error: ", e);
+						//AutoRefresh(1);
+					}
+				});
+		    
+		   });  //End of #submitsection 
+		    
+      }}    
+)};
+
+
+function ajaxGetCollisionResult()
+{
+   var myresult;	
+
+    $.ajax({
+      type : "GET",
+      url :"getconflictmessage",
+      success: function(result)
+      {
+    	  myresult=result;
+    	  console.log(result);
+    	  
+    	  if(result == "")
+    	  {
+    		  
+    	  }
+    	  else
+    	  {
+    	     alert(result + " has a time conflict with your schedule.");
+    	  }
+      }
+      
+     });
+
+}
+
+function createDelete(calGlobal)
+{
+	document.getElementById("list").innerHTML = formatList(calGlobal);
+	
+	$(document).ready(function() {
+        var values = new Array();
+        var titles = new Array();
+        for(i = 0; i < calGlobal.length; i++){
+            var obj = calGlobal[i];
+            var str1 = obj.title;
+            var str2 = obj.crn;
+            values.push(str1);
+            titles.push(str2);
+        }
+        console.log(values);
+          //var values = ["dog", "cat", "parrot", "rabbit"];
+
+   		  var select = document.createElement("select");
+          select.name = "mypets";
+          select.id = "mypets";
+          select.value = "Drop Section!!!";
+
+          for (j = 0; j < calGlobal.length; j++) {
+            var option = document.createElement("option");
+            option.value = titles[j];
+            option.text = values[j];
+            select.appendChild(option);
+          }
+
+          var label = document.createElement("label");
+          label.innerHTML = "Choose course to delete: "
+          label.htmlFor = "mypets";
+
+          document.getElementById("deletesection").appendChild(label).appendChild(select);
+          
+          document.getElementById('buttonIdDelete').onclick = function changeContent() 
+          {
+
+        	  var selected_section =  document.getElementById("mypets").value;
+              console.log(selected_section);
+              $.ajax({
+                  type : "POST",
+                  url : "/deleted",
+                  data : selected_section,
+                  //datatType: "json",
+                  //contentType : 'application/json; charset=UTF-8',
+                  success : function (selected_section)
+                  {
+						console.log(selected_section);
+						AutoRefresh(1);
+                  },
+                  error : function (e){
+                      console.log("Error: ", e);
+                  }
+              });
+
+        }
+                  
+        		  
+ });
+}
+
+function AutoRefresh( t ) 
+{
+    setTimeout("location.reload(true);", t);
+}
+//format the list of courses to only show the title and CRN.
+function formatList(result){
+
+	var str= "<ul>";
+	for(i = 0; i < result.length; i++){
+		var obj = result[i];
+		str += "<br><li><b>" + obj.title + "</b> [" + obj.subject + " " + obj.number + "]" +" <br>CRN: " + obj.crn +  ", Time: "+ obj.day  + " "+ (obj.start).substring(11,16) + " - "+ (obj.end).substring(11,16)+"</li>";    	}
+	str += "</ul>";
+	return str;
+	/*
+	<ul>
+	  <li>Coffee</li>
+	  <li>Tea</li>
+	  <li>Milk</li>
+	</ul>
+	*/
+}
+
+function openCity(evt, cityName) {
+	  var i, tabcontent, tablinks;
+	  tabcontent = document.getElementsByClassName("tabcontent");
+	  for (i = 0; i < tabcontent.length; i++) {
+	    tabcontent[i].style.display = "none";
+	  }
+	  tablinks = document.getElementsByClassName("tablinks");
+	  for (i = 0; i < tablinks.length; i++) {
+	    tablinks[i].className = tablinks[i].className.replace(" active", "");
+	  }
+	  document.getElementById(cityName).style.display = "block";
+	  evt.currentTarget.className += " active";
+	}
+
+	window.onload = function () {
+	    startTab();
+	};
+
+	function startTab() 
+	{
+	  document.getElementById("defaultopen").click();
+	}
+
+
+
+function approve(){
+	$.confirm({
+	    title: 'CONFIRM SCHEDULE',
+	    content: 'Do you want to submit this schedule for advisor approval?',
+	    buttons: {
+	        confirm: function () {
+	        	
+	            
+	           
+	        	      	  
+	        	      $.ajax({
+	        	      type : "POST",
+	        	     
+	        	      url : "studentapprove",
+	        	      
+	        	      
+	        	      success : function(result) {	          
+	        	      console.log(result);
+	        	      },
+	        	      error : function(e) {
+	        	        console.log("ERROR: ", e);
+	        	      }
+	        	    });
+	        	      document.getElementById("addcolumn").style.display = "none"; 
+	        	      document.getElementById("con").style.display = "none";
+	        	  
+	        	      document.getElementById("calcolumn").className = "col-sm-12 ";
+	        	      document.getElementById("cancel").innerHTML = '<input class="buttons" type="button" value="cancel" style="float:left;" onclick="cancel()" id="cancel">';
+
+	            $.alert('Confirmed!');
+	            
+	        },
+	        cancel: function () {
+	            $.alert('Canceled!');
+	        },
+	       
+	    }
+	});
+	
+}
+
+
+function check(){
+	
+	/*<![CDATA[*/
+	var check= /*[[${check}]]*/ '';
+	
+	/*]]>*/ 
+	
+	if (check){
+		$("#status").append('Your advisor has approved your schedule.');
+		 
+	 }
+	 else{
+		 $("#status").append('Your advisor has not approved your schedule yet.');
+		
+	 
+	}
+}
+
+
+function cancel(){
+	$.confirm({
+	    title: 'CANCEL SUBMISSION',
+	    content: 'Are you sure you want to cancel this schedule submission?',
+	    buttons: {
+	        confirm: function () {
+	        	
+	        	$.ajax({
+	      	      type : "POST",
+	      	     
+	      	      url : "studentcancel",
+	      	      
+	      	      success : function(result) {	          
+	      	      console.log(result);
+	      	      },
+	      	      error : function(e) {
+	      	        console.log("ERROR: ", e);
+	      	      }
+	      	    });
+	        	
+	            window.location.reload(true);
+	            
+	        },
+	        cancel: function () {
+	            
+	        },
+	    }
+	});
+}
+
+function checkstudent(){
+
+	 /*<![CDATA[*/
+		var checkS= /*[[${checkS}]]*/ '';
+		
+		/*]]>*/ 
+	
+	 if (checkS){
+		 
+		 document.getElementById("addcolumn").style.display = "none";  
+		 document.getElementById("con").style.display = "none";
+		
+	      document.getElementById("calcolumn").className = "col-sm-12 ";
+	      
+	      document.getElementById("cancel").innerHTML = '<input class="buttons" type="button" value="cancel submission" style="width: 180px; float:left;" onclick="cancel()" id="cancel">';
+		 
+	 }
+	 else{
+		
+	 }
+}
+
+function getPDF() 
+{
+	document.getElementById('defaultlist').click();
+	var HTML_Width = screen.width;
+	var HTML_Height = screen.height;
+	
+	//var HTML_Width = $("#list").width();
+	//var HTML_Height = $("#list").height();
+    
+	var tab = document.getElementById('list');
+   	var win = window.open('', '', 'height=HTML_Height,width=HTML_Width');
+   	win.document.write(tab.outerHTML);
+   	win.document.close();
+    win.print();
+ }
+
+</script>
+
+</head>
+<body onload="check(); startTab(); checkstudent(); ">
+
+<div id="topnav">
+	<div class="col-xl-auto col-lg-auto col-md-12 col-sm-12" id="flightplan">
+		ULM Advising System
+	</div>
+	
+	<div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12" id="name1" th:text="${name}"></div>
+	
+	<div class="col-xl-auto col-lg-12 col-md-12 col-sm-12 col-12">
+ 		<a th:href="@{/logout}">Logout</a>
+ 		<a th:href="@{/apt}">Appointment</a>
+  		<a th:href="@{/calendar}">Schedule</a>
+  		<a th:href="@{/student}">Home</a>
+	</div>
+</div>
+
+<div class="container">
+<div class="row">
+<div class="col-sm-3" style="background-color: #fff; height:100vh;" id="addcolumn">
+
+<br><br>
+<div id = "selectcourse" style="padding-left:5%;">
+
+<span> Enter Course: </span>
+<br>
+<input type="text" id="title" placeholder="eg. CSCI 2000"/>
+<input type="button" value="Show Sections" id='selector' onClick="sendSuject()">
+<br><br>
+<div id="output">  </div>
+</div>
+<div id = "deletesection" style="padding-left:5%;"> </div>
+<div style="padding-left:5%;">	
+	<input type="button" value="Delete" id="buttonIdDelete"/></div>
+</div>
+
+<div id="calcolumn" class="col-sm-9  border-left" style="margin-top: 40px; padding-left: 3%; background-color: #fff;">
+
+<div>
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'calendar')" id="defaultopen"> Calendar </button>
+  <button class="tablinks" onclick="openCity(event, 'list')" id="defaultlist"> Class List </button>
+</div>
+<div id = "list" class="tabcontent"> </div><br>
+<div id='calendar' th:id="calendar" class="tabcontent"></div>
+</div>
+<br>
+<input class="buttons" type="button" value="confirm" style="float:left;" onclick="approve()" id="con">
+<button class ="buttons" value="ppp" id="hell" onclick="getPDF()">Print CRN List</button>
+<div id ="cancel" style="float:left;"></div>
+<div id ="status" style="float:right; color:#5F5F5F;"><b>SCHEDULE APPROVAL STATUS</b><hr></div>
+<div id ="pp" style="float:left;"></div>
+
+</div>
+</div><br><br>
+
+</div>
+
+</body>
+</html>
+
+

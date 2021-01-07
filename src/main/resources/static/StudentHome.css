@@ -1,0 +1,122 @@
+body {
+    background-color: white;
+    background-image: url("https://cdn.discordapp.com/attachments/498242939013824522/774351329875198022/43604ae26d0a4fdfaafd22c5ce0f6f10.png");
+    background-repeat: no-repeat;
+    background-attachment:fixed;
+    background-size: cover;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+  
+
+
+.header {
+    background-color: #800029;
+    /* border-color: #BD955A;
+    border-style:groove; */
+    width: 100%;
+    overflow: hidden;
+}
+
+.header a {
+    float: right;
+    color: #f2f2f2;
+    text-align: center;
+    background-color:#BD955A;
+    border-style: outset;
+    border-color:#BD955A;
+    padding: 11px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    overflow: hidden;
+}
+
+/*.header p {
+    float: right;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+} */
+
+.header flightplan {
+	float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 11px 16px;
+    text-decoration: none;
+    font-size: 20px;  
+} 
+
+.header username {
+	float: left;
+	color: #800029;
+	text-align:center;
+	padding: 14px 18px;
+	margin-right: 13px;
+	text-decoration: none;
+	font-size: 17px;
+	transform: skew(-20deg);
+	background-color: #ebab13;
+}
+
+.header img {
+    float: left;
+    align-content:left;
+    width:128px;
+    height:128px;
+    border:5px groove #ddd;
+}
+
+.header a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+
+/* Untested waters */
+
+.blocktest {
+    width: 33%;
+    padding: 0px;
+    display: inline-block;
+    text-align: center;
+    /* border-style:solid; */
+    border-radius: 25px;
+    background-color:white;
+}
+
+.block{
+    align-content: center;
+    background-color: white;
+    border-style: groove;
+    border-color: #BD955A;
+    color:#800029;
+    float: left;
+    height: 500px;
+    padding: 50px;
+    text-align: center;
+    width: 33.33%;   
+}
+/*.block a {
+    color: #f2f2f2;
+    text-align: center;
+    background-color:#BD955A;
+    border-style: outset;
+    border-color:#BD955A;
+    text-decoration: none;
+    font-size: 17px;
+    overflow: hidden;
+}*/
+.containBlocks{
+    margin-top: 100px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+  
+  
+  
+ 
+  

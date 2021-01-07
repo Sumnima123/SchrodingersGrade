@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Login</title>
+	<link rel = "stylesheet"
+   type = "text/css"
+   href = "main.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<style>
+body {
+
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#topnav {
+  background-color: #800000;
+  width: 100%;
+}
+#topnav p {
+  float: center;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 10px 26px;
+  text-decoration: none;
+  font-size: 25px;
+}
+
+#form_login {
+	margin: 11em 33% 3em;
+	border-radius: 10px;
+	padding: 35px;
+	background-color: #f2f2f2;
+}
+
+* {
+  box-sizing: border-box;
+}
+</style>
+
+<body>
+	<div class="head" id="topnav">
+  		<p> Welcome to ULM Advising System </p>
+	</div>
+
+		<!--div class="row col-offset-lg-4" style="margin: 11em 30% 3em; border:solid 0px #ededed;"-->
+		<!-- <img th:src="@{/images/login.jpg}" class="img-responsive center-block" width="300" height="300" alt="Logo" /> -->
+	<div class="form" id="form_login">
+		<form th:action="@{/login}" method="POST" class="form-signin">
+			<p style="font-size: 17px;"> Enter your ULM email and password</p>
+			<input type="text" class="form-control" name="email" placeholder="Email" th:placeholder="Email"> <br />
+			<input type="password" class="form-control" name="password" placeholder="Password" th:placeholder="Password"> <br />
+			<p style="font-size: small; margin-top: -15px;"> Hint: Password is your CWID </p>
+		
+			<div th:if="${param.error}">
+				<p style="font-size: 20; color: #FF1C19; text-align: center; margin: 30px 0px 15px;">Email or Password is invalid.</p>
+			</div>
+
+			<div align="center">
+				<button class="buttons" type="Submit" name="Submit" th:text="Login">Login</button>
+			</div>
+		</form>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Authorization</title>
+<link rel="stylesheet" type="text/css" href="main.css" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<style type="text/css">
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+@media ( min-width : 100px) {
+	.container {
+		max-width: 1200px;
+	}
+}
+@media screen and (max-width: 1000px) {
+	#name1 {
+		width: 100% !important;
+	}
+}
+@media screen and (max-width: 425px) {
+	#topnav a{
+		text-align: center !important;
+		width: 100% !important; 
+	}
+}
+
+
+a {
+	color: #840029;
+}
+
+a:hover {
+	color: #840029;
+}
+
+
+
+#topnav {
+	overflow: hidden;
+	background-color: #840029;
+	width: 100%;
+}
+
+#topnav a {
+	float: right;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+}
+
+#name1 {
+  float: right;
+  color:#840029;
+  text-align: center;
+  padding: 14px 18px;
+  text-decoration: none;
+  font-size: 17px;
+  background: #EBAB13;
+}
+
+#flightplan {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 11px 16px;
+  text-decoration: none;
+  font-size: 20px;  
+}
+
+#topnav a:hover {
+	background-color: #ddd;
+	color: black;
+}
+
+</style>
+
+
+<script type="text/javascript" th:inline="javascript">
+
+
+	function ajaxPostApproval(date, comment){
+		
+	
+		/*<![CDATA[*/
+		var std_name= /*[[${student_name}]]*/ '';
+		var std_id= /*[[${student_id}]]*/ '';
+		var adv_id= /*[[${adv_id}]]*/ '';
+		var adv_name= /*[[${name}]]*/ '';
+		var semester= /*[[${semester}]]*/ '';
+		var classes= /*[[${listofclasses}]]*/ '';
+		
+		/*]]>*/ 
+		
+	
+		
+		var agree_info= adv_id+">"+ adv_name+">"+ std_id+">"+ std_name+">"+ date+">"+semester+">"+comment+">"+classes;
+	      var formData = agree_info;
+	      console.log(agree_info);
+	      	  
+	      $.ajax({
+	      type : "POST",
+	      contentType : "application/json",
+	      url : "agreement",
+	      data : formData,
+	      dataType : 'json',
+	      success : function(result) {	          
+	      console.log(result);
+	      },
+	      error : function(e) {
+	        console.log("ERROR: ", e);
+	      }
+	    });
+	    }
+
+	function disableSubmit() {
+		  document.getElementById("submit").disabled = true;
+		  document.getElementById("adv_name").disabled = true;
+	        document.getElementById("sign_date").disabled = true;
+	        document.getElementById("comment").disabled = true;
+		 }
+
+		  function activateButton(element) {
+
+		      if(element.checked) {
+		        document.getElementById("submit").disabled = false;
+		        document.getElementById("adv_name").disabled = false;
+		        document.getElementById("sign_date").disabled = false;
+		        document.getElementById("comment").disabled = false;
+		       }
+		       else  {
+		        document.getElementById("submit").disabled = true;
+		        document.getElementById("adv_name").disabled = true;
+		        document.getElementById("sign_date").disabled = true;
+		        document.getElementById("comment").disabled = true;
+		      }
+
+		  }
+		  
+	
+	
+		 function approve(){
+			 document.getElementById("submit").disabled = true;
+			 var name= document.getElementById('adv_name').value;
+     		var date= document.getElementById('sign_date').value;
+     		var comment= document.getElementById('comment').value;
+     		document.getElementById("sign").innerHTML = "<p style='color: maroon;'>Approved by: </p><hr>"+"Advisor: "+name +"<br>Date: "+date+"<hr><input class='buttons' type='submit' value='Disapprove' id='disapprove' onClick='disapprove()'>";
+     		document.getElementById("pp").style.display = "none";
+     		ajaxPostApproval(date, comment);
+		 }
+		 
+		 function get(){
+			
+			 
+			 /*<![CDATA[*/
+				var check= /*[[${check}]]*/ '';
+				
+				/*]]>*/ 
+				
+				
+				
+				console.log(check);
+			 if (check){
+				 
+				 console.log("daseeef");
+					
+				 document.getElementById("sign").style.display = "none";
+				 document.getElementById("pp").style.display = "none";
+	     		//document.getElementById("sign1").innerHTML = "<p style='color: maroon;'>Approved by: </p><hr>"+"Advisor Name: "+adv_name +"<br>Date: "+date+"<hr>";
+			 }
+			 else {
+				 document.getElementById("sign1").style.display = "none";
+				console.log("dasf");
+			 }
+			 
+		 }
+		 
+		 function checkstudent(){
+			 $("#pp").prepend('<b>STUDENT APPROVAL STATUS</b><hr>');
+			 /*<![CDATA[*/
+				var checkS= /*[[${checkS}]]*/ '';
+				
+				/*]]>*/ 
+			 if (checkS){
+				 
+				 $("#pp").append('Approved');
+				 
+			 }
+			 else{
+				 $("#pp").append('Pending');
+				 document.getElementById("ff").style.display = "none";
+			 }
+		 }
+		 
+		 function disapprove(){
+			 /*<![CDATA[*/
+				
+				var formData= /*[[${student_id}]]*/ '';
+				
+				/*]]>*/ 
+			 
+		
+			 $.ajax({
+			      type : "POST",
+			      contentType : "application/json",
+			      url : "disapprove",
+			      data : formData,
+			      dataType : 'json',
+			      success : function(result) {	          
+			      console.log(result);
+			      },
+			      error : function(e) {
+			        console.log("ERROR: ", e);
+			      }
+			    });
+				
+			 location.reload(true);
+		 }
+		  
+</script>
+
+</head>
+<body
+	onload="disableSubmit(); get(); checkstudent();">
+	<div id="topnav">
+		<div class="col-xl-auto col-lg-auto col-md-12 col-sm-12" id="flightplan">
+			ULM Advising System
+	    </div>
+	    
+	    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12" id="name1" style="float: right;" th:text="${name}"></div>
+	    
+	    <div class="col-xl-auto col-lg-12 col-md-12 col-sm-12 col-12">
+        	<a th:href="@{/logout}">Logout</a>
+			<a th:href="@{/advisinghistory}">Records</a>
+			<a th:href="@{/aptadvisor}">Appointment</a>
+			<a th:href="@{/advisor}">Home</a>
+		</div>
+	</div>
+	
+	<div class="main">
+		<div class="container">
+			<div class="row" style='border-bottom: 1px solid red;'>
+			
+				<div class="col-sm-6 border-right" style="margin-top: 120px; margin-bottom: 30px; padding-right:50px;">
+				<table class="table">
+			
+			
+				
+  <tr><td>Name</td><td><text th:text="${student_name}"></text></td></tr>
+  <tr><td>CWID</td><td> <text th:text="${student_id}"></text></td></tr>
+  <tr><td>Advising Time</td><td><text th:text="${timeslot}"></text></td></tr>
+  
+
+</table>
+	 
+	 
+	   
+	</div>
+	<div class="col-sm-5" style="padding-left: 4%; margin-top: 120px;">
+
+	<table class="table table-bordered "> <thead class="thead-light"><th class="thead-light">List of classes: <text th:text="${semester}"></th></thead>
+	<th:block th:each="list : ${listofclasses}">
+	
+    <tr>
+        <td th:text="${list}"></td>
+    </tr>
+</th:block>
+	</table>
+	<br>
+	</div>
+	</div>
+	
+	<br><br><div id ="sign" style="float:left;">
+	<input type="checkbox" name="terms" id="terms" onchange="activateButton(this)"><b> APPROVE</b>   <br>
+<form action="#" method="POST">
+		
+			<hr>
+			<table border="0" cellpadding="7">
+			
+			<tr>
+			<td>Advisor Signature: </td>
+			<td><input type="text" id="adv_name" placeholder="Full Name"/></td>
+			</tr>
+			<tr>
+			<td>Date: </td>
+			<td><input type="date" id="sign_date"/></td>
+			</tr>
+			<tr>
+			<td>Comment: </td>
+			<td><textarea id="comment" rows="4" cols="50"></textarea></td>
+			</tr>
+			</table>
+  <input class="buttons" type="submit" value="submit" id="submit" onClick="approve()"><hr>
+  </form>
+	</div><div id ="pp" style="float:right;"></div>
+<div id ="sign1" style="float:left;">
+<br>
+<p style='color: maroon; padding-left:25px;'><b>Approved by: </b></p><hr>
+<table cellpadding="25" style="background-color: #fff;"><tr><td>Advisor: <text th:text="${advname}"></text> <br>Date: <text th:text="${date}"></text></td><td id="ff">Student: <text th:text="${student_name}"></text> <br>Date: <text th:text="${date}"></text></td></tr></table>
+
+<hr><input class="buttons" type="submit" value="Disapprove" id="disapprove" onClick="disapprove()"/><br><br></div>
+
+</div>	
+
+	</div>
+	<div>
+	</div>
+	
+</body></html>

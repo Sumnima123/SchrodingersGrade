@@ -1,0 +1,32 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<script type="text/javascript">
+$(function() {
+      $("#title").autocomplete({
+        source: "titleAutocomplete",
+        minLength: 1
+      });
+    });
+</script>
+			
+</head>
+<body>
+    <div> Search and Submit your courses here: </div><br /><br />
+    <div align ="center">
+		
+		  <label for="title">Search Course:</label>
+		  <input type="text" id="title" name="title">
+		  <input type="submit">
+		
+	</div>
+</body>
+</html>
+
+

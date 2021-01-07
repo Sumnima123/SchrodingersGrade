@@ -1,0 +1,208 @@
+
+
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,400');
+
+
+
+.topnav {
+  overflow: hidden;
+  background-color: #840029;
+  height: 51px;
+  
+}
+
+.topnav a {
+  float: right;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 17px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+
+
+
+
+
+button {
+  outline: none;
+}
+
+
+
+
+/* Layout Styling */
+
+
+
+
+
+/* Button Styles */
+
+
+.buttons {
+	
+  display: inline-flex;
+  height: 37.5px;
+  width: 160px;
+
+  margin: 20px 0px 0px 0px;
+  outline: none;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: .8em;
+  letter-spacing: 1.3px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+ 
+}
+
+
+
+
+
+.buttons:hover {opacity: 1}
+
+  
+  .bn {
+  background: #76B3FA;
+  border:none;
+  
+  outline: none;
+  border-radius: 20px;
+  padding: 5px 10px;
+  color: #fff;
+  text-decoration: none;
+ 
+ 
+}
+
+  
+
+ .bn:hover {
+background: #6DA7E8;
+	} 
+	
+	
+	#tabl1 {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+ 
+}
+
+#tabl1 td, #tabl1 th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#tabl1 tr:nth-child(even){background-color: #f2f2f2;}
+
+#tabl1 tr:hover {background-color: #ddd;}
+
+#tabl1 th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
+#tabl {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+ 
+}
+
+#tabl td, #tabl th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#tabl tr:nth-child(even){background-color: #f2f2f2;}
+
+#tabl tr:hover {background-color: #ddd;}
+
+#tabl th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+  font-family: arial;
+}
+
+
+.buttoncard {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #840029;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-size: 18px;
+}
+
+.buttoncard:hover {
+  opacity: 0.8;
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(https://example.com/MaterialIcons-Regular.woff2) format('woff2'),
+    url(https://example.com/MaterialIcons-Regular.woff) format('woff'),
+    url(https://example.com/MaterialIcons-Regular.ttf) format('truetype');
+}
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 28px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  color: #800000;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+

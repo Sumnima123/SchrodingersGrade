@@ -1,0 +1,511 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Appointments</title>
+<link rel="stylesheet" type="text/css" href="main.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link href='http://fonts.googleapis.com/css?family=Berkshire+Swash' rel='stylesheet' type='text/css'>
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.1/bootbox.min.js"
+	integrity="sha512-eoo3vw71DUo5NRvDXP/26LFXjSFE1n5GQ+jZJhHz+oOTR4Bwt7QBCjsgGvuVMQUMMMqeEvKrQrNEI4xQMXp3uA=="
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.1/bootbox.js"
+	integrity="sha512-1oBRa/4SUiqjkyl0940/yFwzpGByv7v1hdyX4dHPi1PoKmCLswjbRE7j2Rtq2f2hvSrxu6HEGPOL12TRACy+kg=="
+	crossorigin="anonymous"></script>
+
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@media screen and (max-width: 1000px) {
+	#name1 {
+		width: 100% !important;
+	}
+}
+@media screen and (max-width: 425px) {
+	#topnav a{
+		text-align: center !important;
+		width: 100% !important; 
+	}
+}
+
+#topnav {
+  overflow: hidden;
+  background-color: #840029;
+  width: 100%;
+}
+
+#topnav a {
+  float: right;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+#name1 {
+  float: right;
+  color:#840029;
+  text-align: center;
+  padding: 14px 18px;
+  text-decoration: none;
+  font-size: 17px;
+  background: #EBAB13;
+}
+
+#flightplan {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 11px 16px;
+  text-decoration: none;
+  font-size: 20px;  
+}
+
+#topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+</style>
+
+<script type="text/javascript">
+	var time_slots = new Array();
+	var time_slots1 = new Array();
+	var q;
+	var w = "";
+	
+	var begin_date;
+	var end_date;
+	//var startday;
+	//var endday;
+	
+	function ajaxGet() {
+		$
+				.ajax({
+					type : "GET",
+					url : "getavailabletimeslots",
+					success : function(result) {
+						var tslots = JSON.parse(result);
+						for ( var x in tslots) {
+							time_slots.push(tslots[x]);
+						}
+						hh();
+						var q = "";
+						document.getElementById("selts").innerHTML = 'Select a time slot:';
+						document.getElementById("oo").innerHTML = '<input id="ooo" class="buttons" type="button" value="Select" onClick="get_selected()"/>';
+						document.getElementById("ref").style.display = "block";
+						
+						
+						
+						for (var i = 0; i < time_slots.length; i = i + 1) {
+							q = q + '<input type="radio" id = "timeslot_list" name="slot2" value="' + time_slots[i] + '">'									+ " " + time_slots[i] + "<br/>";
+							document.getElementById("timeslot_list").innerHTML = q;
+						}
+						
+						
+						
+					},
+					error : function(e) {
+
+						console.log("ERROR: ", e);
+					}
+				});
+	}
+
+	function ajaxPost() {
+		var formData = q;
+        //console.log(formData);
+        
+        //comparetwentyfour(formData);
+        var ab = checkTimes(formData);
+		
+		if(ab == 1)
+		{
+			alert("Too late to register for this time. Please choose a later date.")		
+		}
+		else
+		{
+		   $.ajax({
+			type : "POST",
+			contentType : "application/json",
+			url : "studenttimeslot",
+			data : formData,
+			dataType : 'json',
+			success : function(result) {
+				console.log(result);
+				AutoRefresh(1);
+			},
+			error : function(e) {
+				console.log("ERROR: ", e);
+			}
+		   });
+		 }
+		//AutoRefresh(1);
+	}
+
+	function ajaxPost1() {
+		var formData = q;
+		
+      var ab = checkTimes(formData);
+		
+		if(ab == 1)
+		{
+			alert("Too late to register for this time. Please choose a later date.");		
+		}
+		else
+			{
+		$.ajax({
+			type : "POST",
+			contentType : "application/json",
+			url : "studenttimeslot1",
+			data : formData,
+			dataType : 'json',
+			success : function(result) {
+				console.log(result);
+				AutoRefresh(1);
+			},
+			error : function(e) {
+				console.log("ERROR: ", e);
+			}
+		});
+	}
+		//AutoRefresh(1);
+}
+
+	
+	function ajaxGetTS() {
+		$.ajax({
+			type : "GET",
+			url : "getstudenttimeslot",
+			success : function(result) {
+				w = result;
+				$("#my").append(result + '<br>');
+			},
+			error : function(e) {
+				console.log("ERROR: ", e);
+			}
+		});
+	}
+	
+	function ajaxGetUserName() {
+		$.ajax({
+			type : "GET",
+			url : "getname",
+			success : function(result) {
+				//var tslots = JSON.parse(result);
+				document.getElementById("name1").innerHTML = result;
+				//("#name1").append(result);
+			},
+			error : function(e) {
+				console.log("ERROR: ", e);
+			}
+		});
+	}
+
+	function ajaxGetAdvisorName() {
+		$.ajax({
+			type : "GET",
+			url : "getAdvisorName",
+			success : function(result) {
+				//var tslots = JSON.parse(result);
+				document.getElementById("getAdvisorName").innerHTML = result;
+				//("#name1").append(result);
+			},
+			error : function(e) {
+				console.log("ERROR: ", e);
+			}
+		});
+	}
+	
+	function ajaxGetZoom() {
+		$.ajax({
+			type : "GET",
+			url : "getzoom1",
+			success : function(result) {
+				var res = result.split("`");
+				var zoomid= res[0];
+				var zoompass= res[1];
+				document.getElementById("zoo").innerHTML = "Zoom ID: "+zoomid +"<br>Zoom Password: "+zoompass;
+				
+			},
+			error : function(e) {
+				console.log("ERROR: ", e);
+			}
+		});
+	}
+	
+
+	
+	function ajaxGetDeadline() {
+		$.ajax({
+			type : "GET",
+			url : "getdeadline1",
+			success : function(result) {
+				checkd(result);
+				
+				
+			},
+			error : function(e) {
+				console.log("ERROR: ", e);
+			}
+		});
+	}
+	
+	function get_selected() {
+		time_slots1 = new Array();
+		var r = new Array();
+		r = document.querySelectorAll('input[type=radio]:checked')
+		for (var i = 0; i < r.length; i++) {
+			time_slots1.push(r[i].value)
+		}
+		final_display(r);
+	}
+
+	function final_display(r) {
+		q = "";
+		//AutoRefresh(1);
+		if (r.length < 1) {
+			document.getElementById("alert").innerHTML = "Select one!";
+		} else {
+			for (i = 0; i < time_slots1.length; i = i + 1) {
+				q = q + time_slots1[i];										
+			}
+			if (w == "") {
+				document.getElementById("my").innerHTML = q;
+				ajaxPost();
+				
+				document.getElementById('oo').disabled = 'disabled';
+				document.getElementById("alert").innerHTML = "Timeslot selected!";
+			} else {
+				bootbox.confirm("Are you sure you want to change your current timeslot?",
+								function(result) {
+									if (result) {
+										document.getElementById("my").innerHTML = q;
+										ajaxPost1();
+										document.getElementById('ooo').disabled = 'disabled';
+										document.getElementById('ooo').value = 'Timeslot changed';
+																				
+									}
+								});
+			}
+		}
+	}
+	
+	function checkd(result){
+		var rest = result.split(",");
+		
+		var start= rest[0];
+		var sdate = start.split("-");
+		var startday = sdate[2];
+		var startmonth= sdate[1]-1;
+		var startyear = sdate[0];
+		var d = new Date(startyear, startmonth, startday);
+		begin_date=d.toDateString();
+		
+		var end= rest[1];
+		var edate = end.split("-");
+		var endday = edate[2];
+		var endmonth= edate[1]-1;
+		var endyear = edate[0];
+		var d0 = new Date(endyear, endmonth, endday);
+		var d1 = new Date(endyear, endmonth, endday);
+		d1.setDate(d1.getDate() + 1);
+		end_date=d0.toDateString();
+		
+		var dt = new Date();
+		console.log(d1);
+
+		console.log(dt.getDate());
+		  if (dt >= d && dt <= d1) {
+			  ajaxGet();
+			  ajaxGetTS();
+			  document.getElementById("checkdate").style.display = "block";
+			  	
+			 
+		  } else {
+			  document.getElementById("alert1").innerHTML = "<h3>You can schedule appointments from <b>"+ begin_date + "</b> to <b>"+end_date +"</b> only.</h3>";
+			  document.getElementById("checkdate").style.display = "none";
+			  		  
+		  }
+	}
+	
+	function hh(){
+    	var timeslots = time_slots;
+    	console.log(timeslots);
+    	var date_start_time = [];
+    	time_slots = new Array();
+		var ddd = new Array();
+
+    	for(var i = 0; i<timeslots.length; i++){
+    		var split_timeslot = timeslots[i].split("➔");
+    		var datetime = split_timeslot[0].split("━");
+    		var date = datetime[0];
+    		var start_time = datetime[1];
+    		var st=new Date(date + " " + start_time);
+    		date_start_time.push({"start":st,"full":timeslots[i]});
+    		 ddd.push(date_start_time[i].start);
+    	}
+    
+    	ddd.sort(function(a, b){return a - b});
+    	console.log(ddd);
+    	//console.log(date_start_time.toLocaleString());
+
+
+    	for(var j = 0; j<date_start_time.length; j++){
+    
+			
+        for(var k = 0; k<date_start_time.length; k++){
+    		  var yy=date_start_time[k].start;
+    		if(ddd[j].getTime()==yy.getTime()){
+    			time_slots.push(date_start_time[k].full);
+    				k = date_start_time.length;
+    	
+    	    }
+    		}
+    	   }
+    	}
+	
+	function comparetwentyfour(time)
+	{
+		
+	}
+	
+	function checkTimes(str){
+		  var flag = 0;
+		  var date = str.substring(0,9);
+		  var ary = str.split("➔");
+		 //Get the time of the first part of the array 
+		  var first = ary[0].substring(10, ary[0].length);
+		  //mess with the dates
+		   var currentDate = new Date();//current date and time
+
+		   var day = Date.parse(timeConvertor(first));//set to our time
+		   var newDay = new Date(day);//Check time is good, date isn't
+
+		   var data = new Date(date);//date is good, time isn't
+
+		   newDay.setDate(data.getDate());
+		   newDay.setMonth(data.getMonth());
+		   //document.getElementById("myid").innerHTML = newDay.getMonth();
+		   currentDate.setDate(currentDate.getDate()  + 1);//add one day to the date
+		   //Conditional
+		    if(newDay.getTime() <= currentDate.getTime()){
+		      //document.getElementById("myid").innerHTML = "Too late buddy<br>" + newDay + ' ' + currentDate ;
+		      flag = 1;
+		  }
+		  else{
+		     // document.getElementById("myid").innerHTML = "All good dude";
+		      flag = 0;
+		  }
+		  return flag;
+		}
+	
+	
+	function timeConvertor(time)
+	{
+		var PM = time.match('PM') ? true : false
+
+			    time = time.split(':')
+			    //var min = time[1]
+
+			    if (PM) {
+			        var hour = 12 + parseInt(time[0],10)
+			        var min = time[1].replace('PM', '')
+			    } else {
+			        var hour = time[0]
+			        var min = time[1].replace('AM', '')
+			    }
+
+			    var mytime = new Date();
+			    mytime.setHours(hour,min,0);
+			    //hour + ':' + min + ':' + sec;
+			    return mytime;
+			    //document.getElementById("time").innerHTML += mytime;
+		
+	}
+	
+	function AutoRefresh( t ) 
+	{
+	    setTimeout("location.reload(true);", t);
+	}
+	
+</script>
+</head>
+
+<body onload="ajaxGetUserName(); ajaxGetDeadline();  ajaxGetAdvisorName();   ajaxGetZoom(); ">
+
+	<div id="topnav">
+		<div class="col-xl-auto col-lg-auto col-md-12 col-sm-12" id="flightplan">
+			ULM Advising System
+	    </div>
+	    
+	    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12" id="name1" style="float: right;"></div>
+	    
+		<div class="col-xl-auto col-lg-12 col-md-12 col-sm-12 col-12">
+        	<a th:href="@{/logout}">Logout</a>
+        	<a th:href="@{/apt}">Appointment</a>
+        	<a th:href="@{/calendar}">Schedule</a>
+        	<a th:href="@{/student}">Home</a>
+    	</div>
+    </div>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3" align="center" style="background-color: #F0F0F7; box-shadow: 0px 1px 9px #A5A5A5;">
+				<br><br>
+				<text id="myts"><h5>My Time Slot:</h5></text>
+				<hr>
+				
+				<p id="my"></p><hr>
+				<br><br>
+				<br>
+				<h5>Advisor: <text id="getAdvisorName"></text></h5>
+				<hr>
+				<p id="zoo"></p><hr>
+			</div>
+
+			<div  class="col-sm-9" style="padding-left: 4%;">
+				<br>
+				<div id = "alert1">
+				
+				</div>
+				
+				<div id = "checkdate">
+					<form>
+						<br>
+						<p id="selts"></p>
+						
+						<p id="timeslot_list"></p>
+						<table><tr><td><div id="oo"></div></td><td><a id = "ref" th:href='@{/apt}' class="btn btn-info btn-md" style="display: none; margin-top:20px;"><span class="glyphicon glyphicon-refresh"></span> Refresh</a></td></tr></table>
+						<p id="alert"></p>
+					</form>
+				</div>
+				<br><br>
+				
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

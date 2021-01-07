@@ -1,0 +1,571 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">	
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schedule</title>
+<link rel="stylesheet" type="text/css" href="main.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
+
+<link href="http://fullcalendar.io/js/fullcalendar-2.2.5/fullcalendar.css" 
+			th:href="@{/webjars/fullcalendar/2.2.5/fullcalendar.css}" rel="stylesheet"></link>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js" th:src="@{/webjars/momentjs/2.9.0/min/moment.min.js}" type="text/javascript"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="http://fullcalendar.io/js/fullcalendar-2.2.5/fullcalendar.min.js"
+			th:src="@{/webjars/fullcalendar/2.2.5/fullcalendar.min.js}" type="text/javascript"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>		
+  
+    
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@media screen and (max-width: 1000px) {
+	#name1 {
+		width: 100% !important;
+	}
+}
+@media ( min-width : 500px) {
+	.container {
+		max-width: 1700px;
+	}
+}
+@media screen and (max-width: 425px) {
+	#topnav a{
+		text-align: center !important;
+		width: 100% !important; 
+	}
+}
+
+#topnav {
+  overflow: hidden;
+  background-color: #840029;
+  width: 100%;
+}
+
+label{
+ display: inline-text; 
+  vertical-align: top;
+}
+
+#topnav a {
+  float: right;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+
+  
+}
+
+#name1 {
+  float: right;
+  color:#840029;
+  text-align: center;
+  padding: 14px 18px;
+  text-decoration: none;
+  font-size: 17px;
+  background: #EBAB13;
+}
+
+#flightplan {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 11px 16px;
+  text-decoration: none;
+  font-size: 20px;  
+}
+
+#topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+#calendar{
+width:100%;
+
+}
+
+.fc-unthemed th,
+.fc-unthemed td
+{
+	border-color: #ddd;
+}
+
+.closon {
+		position: absolute;
+		top: -9px;
+		right: 0;
+		cursor: pointer;
+        background-color: #FFF
+	}
+
+.tab {
+  float: right;
+  overflow: hidden;
+  width: 209px;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+.tabname{
+float:left;
+
+}
+
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+
+.tab button:hover {
+  background-color: #ddd;
+}
+
+
+.tab button.active {
+  background-color: #ccc;
+}
+
+#sidenav {
+  margin-top: 100px;
+  overflow-x: hidden;
+  padding-top: 25px;
+}
+
+</style>
+
+
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() 
+		{
+	
+	/*<![CDATA[*/
+	var stdID= /*[[${student_id}]]*/ '';
+	/*]]>*/ 
+	
+		document.getElementById("auth").setAttribute("value", stdID);
+	var url= '/advevents/'+stdID;
+	
+			
+			$('#calendar').fullCalendar({
+				header: {
+					left: '',
+					center: '',
+					right: ''
+				},
+				minTime: '07:00:00',
+				maxTime: '21:00:00',
+				contentHeight: 725,
+				defaultView: 'agendaWeek',
+				editable: false,
+				eventOverlap: false,
+				timeZone: "CDT",
+				cache: false,
+				eventLimit: true,
+				allDay: false,
+				overlap: false,
+				allDaySlot: false,
+				eventColor: '#800000',
+				// allow "more" link when too many events
+				//businessHours:true,
+			    events: {
+			        url: url,
+			        type: 'GET',
+			        success: function(result){
+			        	calGlobal = result;
+			        	
+			           //createDelete(calGlobal);   
+			        	
+			        },
+			        error: function() 
+			        {
+			            alert('there was an error while fetching events!');
+			        },
+			        //color: 'blue',   // a non-ajax option
+			        //textColor: 'white' // a non-ajax option
+			    }
+			    
+			});
+		});
+
+$(function() 
+{
+$("#title").autocomplete({
+    source: "titleAutocomplete",             
+    minLength: 1
+  });
+});
+
+
+
+$(function()
+		{
+	/*<![CDATA[*/
+	var stdID= /*[[${student_id}]]*/ '';
+	/*]]>*/ 
+	
+		
+	var url= '/advevents/'+stdID;
+			$.ajax({
+			      type : "GET",
+			      url :url,
+			      success: function(result)
+			      {
+			    	  global=result;
+			   
+			    	  if(result.length >= 1)
+			          {
+			    	     createDelete(result);
+			    	     document.getElementById('buttonIdDelete').style.visibility = 'visible';
+			          }
+			    	  else
+			    	  {
+			              document.getElementById('buttonIdDelete').style.visibility = 'hidden';
+			    	  }
+			      }
+			});
+
+
+});
+
+
+function sendSuject()
+{
+	var ab = $("#title").val();
+	if(ab == null | ab == "")
+	{		
+		window.confirm(" Null value entered. Please enter section name before submit.");
+	}
+	
+	else
+	{
+	document.getElementById("selector").disabled = true
+	
+	var dataObj = new Object();
+	dataObj.subject = ab;
+	
+	$.ajax({
+		type : "POST",
+		url : "/postsubject",
+		data : JSON.stringify(dataObj),
+		datatType: "json",
+		contentType : 'application/json; charset=UTF-8',
+		success : function (result)
+		{
+			
+			// CALLS Getter for sections
+			ajaxGet();
+			console.log(result + " is the result");
+		},
+		error : function (e){
+			console.log("Error: ", e);
+			//AutoRefresh(1);
+		}
+	});
+	}
+}	
+
+
+var global = new Array();
+function ajaxGet(){
+    $.ajax({
+      type : "GET",
+      url :"getsubject",
+      success: function(result){
+    	  global=result;
+    
+    	  
+    	  for(var value of global) 
+    		{
+    		//Append a radio button to each value of the global	
+    		var val= value;
+    		//
+    		var split = val.split(",");
+    		var tit= split[0];
+    		console.log(tit);
+    		var full= "<text class='uppercase' style='font-size:22px;'>"+tit+"</text><br>" + split[1];
+    	      $('#output')
+    	        .append(`<input type="radio" id="${value}" name="sections" value="${value}" class="form-radio border-gray-400 h-4 w-4 text-indigo-600" >`)
+    	        .append(`<label for="${value}" style=" padding-left: 10px;" class="ml-3 text-sm font-medium text-gray-700">${full}</label></div>`)
+    	        .append(`<hr><br>`);
+
+    		}
+    	  
+    	  var btn = document.createElement("BUTTON");
+    	  btn.className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-900 shadow-sm hover:bg-red-700 focus:outline-none focus:shadow-outline focus:bg-grey-500 active:bg-grey-600";
+		    btn.id ="submitSection";
+		    btn.innerHTML = "Submit";
+		    //btn.onClick="reply_click()";
+		    $('#output').append(`<br>`).append(btn);
+		    
+		    	    
+		    var result;
+		    $('#submitSection').click(function() 
+		    {
+		    var radios = document.getElementsByName('sections');
+		    
+		   
+		    for (var i = 0; i < radios.length; i++) 
+		    {
+			   if (radios[i].checked) 
+			  {
+			   
+                result = radios[i].value;
+                
+			    break;
+			  }
+			}  //End of for loop
+			
+			
+			/*<![CDATA[*/
+			var stdID= /*[[${student_id}]]*/ '';
+			/*]]>*/ 
+			
+			var url= '/acceptedadvisor/'+stdID;
+			
+			
+		    $.ajax({
+					type : "POST",
+					url : url,
+					data : result,
+					success : function (result){
+					
+						AutoRefresh(1); 
+						//listOfCourses();
+						ajaxGetCollisionResult();
+					},
+					error : function (e){
+						console.log("Error: ", e);
+						//AutoRefresh(1);
+					}
+				});
+		    
+		   });  //End of #submitsection 
+		    
+      }}    
+)};
+
+
+function ajaxGetCollisionResult()
+{ 
+   var myresult;	
+
+   $.ajax({
+      type : "GET",
+      url :"getconflictmessage",
+      success: function(result)
+      {
+    	  myresult=result;
+    	  console.log(result);
+    	  
+    	  if(result == "")
+    	  {
+    		  
+    	  }
+    	  else
+    	  {
+				alert(result + " has a time conflict with your schedule.");
+    	  }
+       }
+     });
+
+}
+
+function createDelete(calGlobal)
+{
+	document.getElementById("list").innerHTML = formatList(calGlobal);
+	
+	$(document).ready(function() {
+        var values = new Array();
+        var titles = new Array();
+        for(i = 0; i < calGlobal.length; i++){
+            var obj = calGlobal[i];
+            var str1 = obj.title;
+            var str2 = obj.crn;
+            values.push(str1);
+            titles.push(str2);
+        }
+        
+          //var values = ["dog", "cat", "parrot", "rabbit"];
+
+   		  var select = document.createElement("select");
+   		  select.style.outline= "solid 1px #E3E3E3";
+   		  select.style.padding= "10px";
+          select.name = "mypets";
+          select.id = "mypets";
+          select.value = "Drop Section!!!";
+
+          for (j = 0; j < calGlobal.length; j++) {
+             var option = document.createElement("option");
+            
+             option.value = titles[j];
+             option.text = values[j];
+             select.appendChild(option);
+           }
+
+          var label = document.createElement("label");
+          label.innerHTML = "Choose course to delete: <br>"
+          label.htmlFor = "mypets";
+
+          document.getElementById("deletesection").appendChild(label).appendChild(select);         
+          document.getElementById('buttonIdDelete').onclick = function changeContent() 
+          {
+        	  var selected_section =  document.getElementById("mypets").value;
+              
+              /*<![CDATA[*/
+  			var stdID= /*[[${student_id}]]*/ '';
+  			/*]]>*/ 
+  			
+  			var url= '/deletedadvisor/'+stdID;
+              
+              $.ajax({
+                  type : "POST",
+                  url : url,
+                  data : selected_section,
+                
+                  success : function (selected_section)
+                  {
+						
+						AutoRefresh(1);
+                  },
+                  error : function (e){
+                      console.log("Error: ", e);
+                  }
+              });
+        }  
+ });
+}
+
+function AutoRefresh( t ) 
+{
+    setTimeout("location.reload(true);", t);
+}
+//format the list of courses to only show the title and CRN.
+function formatList(result){
+
+	var str= "<ul>";
+	for(i = 0; i < result.length; i++){
+		var obj = result[i];
+		str += "<br><li><b>" + obj.title + "</b> [" + obj.subject + " " + obj.number + "]" +" <br>CRN: " + obj.crn +  ", Time: "+ obj.day  + " "+ (obj.start).substring(11,16) + " - "+ (obj.end).substring(11,16)+"</li>";    	}
+	str += "</ul>";
+	return str;
+	
+}
+
+function openCity(evt, cityName) {
+	  var i, tabcontent, tablinks;
+	  tabcontent = document.getElementsByClassName("tabcontent");
+	  for (i = 0; i < tabcontent.length; i++) {
+	    tabcontent[i].style.display = "none";
+	  }
+	  tablinks = document.getElementsByClassName("tablinks");
+	  for (i = 0; i < tablinks.length; i++) {
+	    tablinks[i].className = tablinks[i].className.replace(" active", "");
+	  }
+	  document.getElementById(cityName).style.display = "block";
+	  evt.currentTarget.className += " active";
+	}
+
+	window.onload = function () {
+	    startTab();
+	};
+
+	function startTab() 
+	{
+	  document.getElementById("defaultopen").click();
+	}
+
+</script>
+
+
+</head>
+<body onload="startTab();">
+	
+<div id="topnav">
+	<div class="col-xl-auto col-lg-auto col-md-12 col-sm-12" id="flightplan">
+		ULM Advising System
+	</div>
+	
+	<div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12" id="name1" style="float: right;" th:text="${name}"></div>
+	
+	<div class="col-xl-auto col-lg-12 col-md-12 col-sm-12 col-12">
+		<a th:href="@{/logout}">Logout</a>
+		<a th:href="@{/advisinghistory}">Records</a>
+ 		<a th:href="@{/aptadvisor}">Appointment</a>
+  		<a th:href="@{/advisor}">Home</a>
+  	</div>
+</div>
+
+<div class="container">
+<div class="row">
+	<div class="col-xl-4 col-lg-4" id="sidenav">
+		<div id = "selectcourse" style="padding-left:5%;">
+			<span> Enter Course: </span><br>
+			<input type="text" class="border py-1 px-2 text-grey-darkest" id="title" placeholder="eg. CSCI 2000"/>
+			<button id='selector' onClick="sendSuject()" class="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-800 shadow-sm hover:bg-red-700 focus:outline-none focus:shadow-outline focus:bg-grey-500 active:bg-grey-600">
+				Select
+    		</button>
+			<div id="output"> </div>
+		</div>
+		<br><br>
+		<div id = "deletesection" style="padding-left:5%;"></div> 
+		
+		<div style="padding-left:5%;">	
+			<input type="button" value="Delete" id="buttonIdDelete" class="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-800 shadow-sm hover:bg-red-700 focus:outline-none focus:shadow-outline focus:bg-grey-500 active:bg-grey-600"/>
+		</div> 
+	</div>
+	
+	
+	<div id="cal" class="col-xl-8 col-lg-8 col-md-12" style="padding: 0px 30px; background-color: #fff;">
+		<br><br><br><br>
+		<div class="tab">
+  			<button class="tablinks" onclick="openCity(event, 'calendar')" id="defaultopen"> Calendar </button>
+ 			<button class="tablinks" onclick="openCity(event, 'list')"> Class List </button>
+		</div>
+			
+		<div class="tabname" >
+			<p style="font-size: 33px; color: #5D5D5D;"><text th:text="${student_name}"></text>'s weekly schedule</p>
+		</div>
+		<br>
+
+		<div id = "list" class="tabcontent"> </div><br>
+		<div id='calendar' th:id="calendar" class="tabcontent"></div>
+		<br>
+			
+		<form th:action="@{/authorize}">
+			<input id="auth" name="id" type="hidden" value="44"/>
+        	<input class="buttoncard" type="submit" value="Authorize"></input>
+		</form><br><br>
+	</div>
+</div>
+</div>
+
+
+</body>
+</html>
+
+

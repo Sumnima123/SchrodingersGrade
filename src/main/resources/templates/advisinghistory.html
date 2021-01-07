@@ -1,0 +1,243 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Authorization</title>
+<link rel="stylesheet" type="text/css" href="main.css" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<style type="text/css">
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+@media ( min-width : 100px) {
+	.container {
+		max-width: 1200px;
+	}
+}
+@media screen and (max-width: 1000px) {
+	#name1 {
+		width: 100% !important;
+	}
+}
+@media screen and (max-width: 425px) {
+	#topnav a{
+		text-align: center !important;
+		width: 100% !important; 
+	}
+}
+
+
+a {
+	color: #840029;
+}
+
+a:hover {
+	color: #840029;
+}
+
+#topnav {
+	overflow: hidden;
+	background-color: #840029;
+	width: 100%;
+}
+
+#topnav a {
+	float: right;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+}
+
+#name1 {
+  float: right;
+  color:#840029;
+  text-align: center;
+  padding: 14px 18px;
+  text-decoration: none;
+  font-size: 17px;
+  background: #EBAB13;
+}
+
+#flightplan {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 11px 16px;
+  text-decoration: none;
+  font-size: 20px;  
+}
+
+#topnav a:hover {
+	background-color: #ddd;
+	color: black;
+}
+
+#selectstudent {
+	margin-left: 15px;
+	padding: 15px;
+}
+
+
+</style>
+
+
+<script type="text/javascript" th:inline="javascript">
+
+$(function() 
+		{
+		$("#name").autocomplete({
+		    source: "nameAutocomplete",             
+		    minLength: 1
+		  });
+		});
+	
+	//
+	function button()
+	{
+	    console.log(document.getElementById("name").value);
+	    var selected_name = document.getElementById("name").value;
+
+	    if(selected_name == null | selected_name == "")
+	    {
+	        window.confirm(" Null value entered. Please enter crn before submit.");
+	    }
+
+	    else
+	    {
+	    //document.getElementById("wasClicked").disabled = true
+	    console.log('Hello');
+	    
+/*
+	    var dataObj = new Object();
+	    dataObj.name = selected_name;
+	    console.log(dataObj.name);
+*/
+	    $.ajax({
+	        type : "POST",
+	        url : "/postStudent",
+	        data : selected_name,
+	        //datatType: "json",
+	        //contentType : 'application/json; charset=UTF-8',
+	        success : function (result)
+	        {
+
+	            // CALLS Getter for sections
+	            console.log(result + " is the result");
+	            
+	            ajaxGet();
+	        },
+	        error : function (e){
+	            console.log("Error: ", e);
+	            //AutoRefresh(1);
+	        }
+	    });
+	    
+	 }
+}
+	
+function ajaxGet(){
+	$.ajax({
+		 type : "GET",
+	      url :"getAuthorized",
+	      success: function(result){
+	          console.log(result);  
+	          displayPast(result);
+	      },
+	      error: function(e){
+	    	  console.log(e);}
+	      
+	});
+}
+
+function displayPast(history){
+	//console.log(history[1].class_crn);
+	var comments = " ";
+	var finished = " ";
+	for(i = history.length -1; i >= 0; i--){
+		var obj = history[i];
+		var courses = obj.class_crn.split(',');
+		var str = "<ul><lh>" + obj.semester + "</lh>"
+		console.log(courses);
+	
+		for(j = 0; j < courses.length; j++ ){
+			str += "<li>" + courses[j] + "</li>";
+		}
+		if(obj.advisor_comment == null | obj.advisor_comment == ""){
+			comments = "No comment";
+		}
+		else{
+			comments = obj.advisor_comment;
+		}
+
+		str += "</ul><p class = 'paragraph' style = 'text-indent: 6%'> Advisor: " + obj.advisor_name + "&nbsp; &nbsp; Approval Date: " + obj.authorized_date + "</p> <div class = 'comments' style = 'text-indent: 6%'>  Advisor Comments:<br>" + "<p style = 'text-indent: 6%'>" + comments + "</p>" +"</div>";
+		finished += str;
+	}
+	document.getElementById("output").innerHTML = finished;
+}
+
+function AutoRefresh( t ) 
+{
+    setTimeout("location.reload(true);", t);
+}	
+		  
+</script>
+
+</head>
+<body>
+	<div id="topnav">
+		<div class="col-xl-auto col-lg-auto col-md-12 col-sm-12" id="flightplan">
+			ULM Advising System
+	    </div>
+	    
+	    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12" id="name1" style="float: right;" th:text="${name}"></div>
+	
+	    <div class="col-xl-auto col-lg-12 col-md-12 col-sm-12 col-12">
+	    	<a th:href="@{/logout}">Logout</a>
+			<a th:href="@{/advisinghistory}">Records</a>
+			<a th:href="@{/aptadvisor}">Appointment</a>
+			<a th:href="@{/advisor}">Home</a>
+		</div>
+	</div>
+	
+	<div class="main">
+		<div class="container">
+			<div class="d-flex justify-content-start">
+				<div class="col-sm-6" style="margin-top: 120px; ">
+					<div id="selectstudent">
+						<p style="">Look up for students below to see their advising history</p>
+						Search Student: 
+						<input type = "text" id ="name" placeholder = "John Doe [12345678]"/>
+						<input type = "button" id = "wasClicked" value = "Submit" onclick = "button()"/>
+      					<br>
+					</div>
+					
+					<div id="output" ></div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>
